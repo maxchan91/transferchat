@@ -1,0 +1,120 @@
+4) Main user flow (end-to-end)
+A) Agent submits a screenshot
+
+Agent posts the screenshot in the group (ideally inside a “Claims” topic/thread).
+
+Agent replies to that screenshot with:
+
+/transfer @fromAgent
+
+
+Rule: /transfer must be a reply to a message that contains a photo. If not, the bot refuses the command (“Please reply to the screenshot with /transfer.”)
+
+B) Bot creates a claim card (single message)
+
+Bot generates transfer_id, marks claim PENDING and posts a claim card in the same thread:
+
+Transfer Claim
+ID: TR-20250824-1A2B3C
+Claimant: @agentX
+Transferred from: @fromAgent
+Leaders: review below
+[Approve ✅] [Reject ❌]
+
+
+The card shows the screenshot (using the same photo) and sits as a reply to the agent’s original message for context.
+
+Buttons are visible to everyone, but only leaders’ clicks are accepted.
+
+C) Leader decision via buttons
+
+When a button is tapped, bot checks is user a group admin?
+
+Not a leader → show popup:
+
+Only leaders can action this.
+
+Leader:
+
+Approve → proceed to approval flow (D).
+
+Reject → proceed to rejection flow (E).
+
+D) Approval flow (writes to Sheets)
+
+Bot marks claim APPROVED, records decided_by and ts_decided.
+
+Bot appends a row to Valid_Transfers (see schema).
+
+Bot edits the claim card caption in place to show final status:
+
+Transfer Claim — ✅ APPROVED
+ID: TR-20250824-1A2B3C
+Claimant: @agentX
+Transferred from: @fromAgent
+By leader: @leaderY
+
+
+Buttons are removed to prevent double actions.
+
+E) Rejection flow (no write to Sheets)
+
+After Reject, bot asks that leader (in-thread):
+
+Leader @leaderY, please reply here with a short rejection reason for TR-20250824-1A2B3C.
+
+The leader replies (one message). Bot:
+
+Marks claim REJECTED (stores the reason internally only).
+
+Edits the claim card caption:
+
+Transfer Claim — ❌ REJECTED
+ID: TR-20250824-1A2B3C
+Claimant: @agentX
+Transferred from: @fromAgent
+Reason: (leader’s text)
+
+
+Buttons are removed.
+
+Note: As requested, rejections are not written to Google Sheets. If you want a lightweight audit later, you can keep an in-memory log or a non-Sheet log file; it won’t affect incentives.
+
+5) Guardrails & UX rules (important)
+
+Reply-only rule: /transfer must be a reply to a photo message. This guarantees the bot has the correct screenshot.
+
+Google sheet Tab 3 — Transfer chat (all approved transfers; written by the bot)
+
+Columns (left-to-right; exact names matter)(not yet created):
+
+transfer_id
+
+decided_at_local (timestamp in Philippines)
+
+date_key (string YYYY-MM-DD in Philippines)
+
+claimant_username (e.g., @agentA)
+
+transferred_from (e.g., @fromAgent)
+
+decided_by (leader username)
+
+
+Tab 2 — Transfer summary (daily snapshot; one row per agent per day)
+
+Columns:
+
+date_key (YYYY-MM-DD)
+
+claimant_username
+
+count_transfers
+
+generated_at (timestamp when the snapshot was produced)
+
+
+The telegram bot API is 8406861100:AAFi4CVbQeSOXoz-v43dkvC1_ut40RrUvPI
+For google sheet, same as C:\Users\L\Workspace\JD\Bots\Attendancebot API, except use the tab "Transfer chat"
+Telegram token chat ID is -4836341249
+Add in instructions manual

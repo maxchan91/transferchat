@@ -1,0 +1,28 @@
+{
+  "name": "transferchat-bot",
+  "version": "1.0.0",
+  "description": "Telegram bot for managing transfer claims with Google Sheets integration",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js",
+    "dev": "nodemon bot.js"
+  },
+  "keywords": [
+    "telegram",
+    "bot",
+    "transfer",
+    "claims",
+    "google-sheets"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "telegraf": "^4.15.3",
+    "googleapis": "^128.0.0",
+    "moment-timezone": "^0.5.43",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
