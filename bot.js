@@ -48,8 +48,8 @@ bot.command('help', async (ctx) => {
 
         const helpMessage = `🔄 *Transfer Claims Bot - Help Guide*
 
-*For Agents:*
-1. Post your screenshot in the group (preferably in Claims thread)
+*For CSR:*
+1. Post your screenshot in the group
 2. Reply to your screenshot with: \`/transfer @fromAgent\`
    • Replace \`@fromAgent\` with actual agent username
    • Must be a reply to a photo message
