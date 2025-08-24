@@ -40,6 +40,48 @@ function generateTransferId() {
     return `TR-${date}-${randomStr}`;
 }
 
+bot.command('help', async (ctx) => {
+    try {
+        if (ctx.chat.id.toString() !== CHAT_ID) {
+            return;
+        }
+
+        const helpMessage = `🔄 *Transfer Claims Bot - Help Guide*
+
+*For Agents:*
+1\\. Post your screenshot in the group \\(preferably in Claims thread\\)
+2\\. Reply to your screenshot with: \`/transfer @fromAgent\`
+   \\• Replace \`@fromAgent\` with actual agent username
+   \\• Must be a reply to a photo message
+
+*For Leaders:*
+1\\. Review claim cards that appear
+2\\. Click ✅ *Approve* or ❌ *Reject*
+3\\. If rejecting, provide a reason when prompted
+
+*Important Rules:*
+\\• \`/transfer\` must reply to a screenshot
+\\• Only group admins can approve/reject
+\\• Each claim can only be processed once
+\\• Rejections require a reason
+
+*Commands:*
+\`/help\` \\- Show this help guide
+\`/transfer @agent\` \\- Create transfer claim \\(reply to photo\\)
+
+*Questions?* Contact your team leader\\.`;
+
+        await ctx.reply(helpMessage, { 
+            parse_mode: 'MarkdownV2',
+            reply_to_message_id: ctx.message.message_id 
+        });
+
+    } catch (error) {
+        console.error('Error in help command:', error);
+        ctx.reply('Help guide is temporarily unavailable.');
+    }
+});
+
 bot.command('transfer', async (ctx) => {
     try {
         if (ctx.chat.id.toString() !== CHAT_ID) {
