@@ -6,16 +6,27 @@ require('dotenv').config();
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const CHAT_ID = process.env.CHAT_ID;
+const SPREADSHEET_ID = process.env.SPREADSHEET_ID;
 const TIMEZONE = 'Asia/Manila';
 
 const pendingClaims = new Map();
 const awaitingRejectionReason = new Map();
 
 async function initializeGoogleSheets() {
-    const auth = new google.auth.GoogleAuth({
-        keyFile: path.join(__dirname, 'credentials.json'),
-        scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-    });
+    let auth;
+    
+    if (process.env.GOOGLE_CREDENTIALS) {
+        const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
+        auth = new google.auth.GoogleAuth({
+            credentials,
+            scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+        });
+    } else {
+        auth = new google.auth.GoogleAuth({
+            keyFile: path.join(__dirname, 'credentials.json'),
+            scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+        });
+    }
     
     const authClient = await auth.getClient();
     const sheets = google.sheets({ version: 'v4', auth: authClient });
@@ -234,7 +245,7 @@ bot.on('text', async (ctx) => {
 async function writeToGoogleSheets(claim) {
     try {
         const sheets = await initializeGoogleSheets();
-        const spreadsheetId = process.env.SPREADSHEET_ID;
+        const spreadsheetId = SPREADSHEET_ID;
         
         const decidedAtLocal = moment(claim.decidedAt).tz(TIMEZONE);
         const dateKey = decidedAtLocal.format('YYYY-MM-DD');
