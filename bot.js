@@ -84,8 +84,8 @@ bot.command('transfer', async (ctx) => {
 
         const claimCard = `🔄 *Transfer Claim*
 *ID:* \`${transferId}\`
-*Claimant:* ${claimant}
-*Transferred from:* ${fromAgent}
+*Claimant:* ${claimant.replace(/_/g, '\\_')}
+*Transferred from:* ${fromAgent.replace(/_/g, '\\_')}
 *Leaders:* review below`;
 
         const keyboard = Markup.inlineKeyboard([
@@ -147,9 +147,9 @@ bot.action(/approve_(.+)/, async (ctx) => {
 
         const updatedCaption = `✅ *Transfer Claim — APPROVED*
 *ID:* \`${transferId}\`
-*Claimant:* ${claim.claimant}
-*Transferred from:* ${claim.transferredFrom}
-*By leader:* ${leaderUsername}`;
+*Claimant:* ${claim.claimant.replace(/_/g, '\\_')}
+*Transferred from:* ${claim.transferredFrom.replace(/_/g, '\\_')}
+*By leader:* ${leaderUsername.replace(/_/g, '\\_')}`;
 
         await ctx.editMessageCaption(updatedCaption, {
             parse_mode: 'Markdown'
@@ -217,8 +217,8 @@ bot.on('text', async (ctx) => {
                 
                 const updatedCaption = `❌ *Transfer Claim — REJECTED*
 *ID:* \`${transferId}\`
-*Claimant:* ${claim.claimant}
-*Transferred from:* ${claim.transferredFrom}
+*Claimant:* ${claim.claimant.replace(/_/g, '\\_')}
+*Transferred from:* ${claim.transferredFrom.replace(/_/g, '\\_')}
 *Reason:* ${reason}`;
 
                 await ctx.telegram.editMessageCaption(
